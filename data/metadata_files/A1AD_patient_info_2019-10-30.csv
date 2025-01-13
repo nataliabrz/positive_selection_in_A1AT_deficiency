@@ -1,0 +1,11 @@
+HMDMC,Donor,paper_id,Sex,Age,SampleInternalID,SampleExternalID,TissueType,SampleOwner,Disease,Source,Diabetic,Diabetes_treatment,Smoking_status,nanoseq_targeted_liver_panel
+22/0044,PD60803,AT05_69_M,Male,69,PD60803b,TB09.0864,Liver,nb15,A1AD,TissueBank,no,no,Never,yes
+22/0044,PD52286,HH05_60_M,Male,60,PD52286b_tds0001,TB10.0860,Liver,nb15,HH,TissueBank,yes,insulin_treated,Current,yes
+22/0044,PD60802,AT04_54_M,Male,54,PD60802b,TB12.1570,Liver,nb15,A1AD,TissueBank,yes,tablet_controlled,Never,yes
+22/0044,PD52285,HH04_46_M,Male,46,PD52285b_tds0001,TB12.2202,Liver,nb15,HH,TissueBank,yes,insulin_treated,Never,yes
+22/0044,PD60233,AT03_57_M,Male,57,PD60233b,TB12.3602,Liver,nb15,A1AD,TissueBank,yes,diet_controlled,Never,yes
+22/0044,PD51608,HH03_58_F,Female,58,PD51608b_tds0001,TB13.0465,Liver,nb15,ARLD+HH,TissueBank,no,no,Current,yes
+22/0044,PD51606,AT01_46_M,Male,46,PD51606b_tds0001,TB15.0879,Liver,nb15,ARLD+HH+A1AD,TissueBank,no,no,Current,yes
+22/0044,PD51605,HH01_54_M,Male,54,PD51605b_tds0001,TB15.3987,Liver,nb15,HH,TissueBank,yes,insulin_treated,Ex,no
+22/0044,PD51607,HH02_50_M,Male,50,PD51607b_tds0001,TB16.0001,Liver,nb15,ARLD+HH,TissueBank,no,no,Current,yes
+22/0044,PD60232,AT02_71_M,Male,71,PD60232b,TB19.02794,Liver,nb15,A1AD,TissueBank,no,no,Never,no
