@@ -39,18 +39,18 @@ Both CaVEMan and cgpPindel were originally designed to detect clonal mutations i
 4. **Custom Filtering for Low-Input Library Prep Artefacts**  
    - A custom filter is applied to remove artifacts specifically associated with the low-input library prep process, targeting those introduced by cruciform DNA structures. The method is described in [SangerLCMFiltering](https://github.com/MathijsSanders/SangerLCMFiltering).
 
-5. **Filtering Steps**  
+5. **Additional Filtering**  
    Further filtering is applied to refine the variant calls. The following filters are applied to SNVs and indels:
+
+  - **For SNVs**:  
+     - **ASRD Filter**: Requires a median (read length adjusted) alignment score of variant-supporting reads >= 0.87.  
+     - **CLPM Filter**: Requires a median number of soft-clipped bases in variant-supporting reads of 0.  
+     - **MNP Filter**: Requires normal sample mutant allele proportion <= 0.1 and tumor sample mutant allele proportion minus normal sample mutant allele proportion >= 0.05 (allowing lower VAF than the original filter).  
 
    - **For Indels**:  
      - **FF016 Filter**: Requires at least 2 fragments and bi-directional support.  
      - **FF018 Filter**: Requires at least 6x depth in both tumor and normal samples.  
      - **HOMO Filter**: Removes 1bp indels at homopolymer runs of 6 or more. Any indel in a repeat of greater than 10 is removed.  
-
-   - **For SNVs**:  
-     - **ASRD Filter**: Requires a median (read length adjusted) alignment score of variant-supporting reads >= 0.87.  
-     - **CLPM Filter**: Requires a median number of soft-clipped bases in variant-supporting reads of 0.  
-     - **MNP Filter**: Requires normal sample mutant allele proportion <= 0.1 and tumor sample mutant allele proportion minus normal sample mutant allele proportion >= 0.05 (allowing lower VAF than the original filter).  
 
 7. **Run cgpVaf**  
    - cgpVaf is used to force-call the SNVs and indels across all samples from the same patient, using a cutoff for read mapping quality (30) and base quality (25) to extract VAF values from the BAM files at specific genomic positions defined in a BED file.
