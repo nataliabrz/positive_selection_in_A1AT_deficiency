@@ -17,11 +17,14 @@ For further details about how the raw data were processed to generate the somati
 The bam files were processed to identify somatic mutations using the following pipeline:
 
 1. **Variant Calling**  
-   - **SNVs**: Detected with CaVEMan ([Jones *et al.*, 2016](https://doi.org/10.1002/cpbi.20)).  
+   - **SNVs**: Detected with CaVEMan ([Jones *et al.*, 2016](https://doi.org/10.1002/cpbi.20)) using the following parameters:  
+     - `-tum-cn_default 10`  
+     - `-norm-cn-default 2`  
+     - `-normal-contamination 0.1`  
    - **Indels**: Identified with cgpPindel ([Raine *et al.*, 2015](https://doi.org/10.1002/0471250953.bi1507s52)).
 
 2. **VCF Reflagging**  
-   - **Context**: Both CaVEMan and cgpPindel were originally designed to detect clonal mutations in tumor samples. To accommodate the low-input DNA pipeline (e.g., laser capture microdissection [LCM] samples), the variant calling thresholds and filters were re-adjusted to interpret the data effectively.  
+Both CaVEMan and cgpPindel were originally designed to detect clonal mutations in tumor samples. To accommodate the low-input DNA pipeline (e.g., laser capture microdissection [LCM] samples), the variant calling thresholds and filters were re-adjusted to interpret the data effectively.  
 
    - **For SNVs**:  
      - The **MNP flag (Matched normal proportion)** is turned off.  
@@ -68,10 +71,11 @@ You can adapt this stage to your local setup and the mutation-calling algorithm 
 These objects should be downloaded and placed in the cloned repository with the following file structure:
 
 data/calls/exome_calls.csv
+
 data/calls/wgs_calls.csv
 
 
-# Notes on specific stages of data generation
+# Notes on downsteam analysis
 
 ## 01 Running dN/dS to test for positive selection
 
