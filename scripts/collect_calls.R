@@ -113,7 +113,7 @@ for (p in seq_len(nrow(projects))) {
   }
 }
 
-write.csv(exome_muts, "data/calls/exome_calls_PDv38is_wgs.csv",
+write.csv(exome_muts, "/lustre/scratch126/casm/team154pc/nb15/liver/data/HH_A1AD_rerun/calls/exome_calls_PDv38is_wgs.csv",
           row.names = FALSE)
 
 #### check if re-running 3131 resulted in other mutations being different

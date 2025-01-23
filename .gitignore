@@ -14,4 +14,6 @@ scripts/nb15_nanoseqLollipopGenePlotsV2.Rmd
 scripts/ng2021_get_sequence_contex_for_calls_hg19.r
 scripts/ng2021_run_dnds.r
 scripts/positive_selection_in_A1AT_deficiency.Rproj
+outputs/combined_collapsed_dnds_input_backup.tsv
 *.rds
+._*
