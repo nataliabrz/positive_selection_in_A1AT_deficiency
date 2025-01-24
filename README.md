@@ -6,12 +6,14 @@ This code allows reproduction of all analyses from filtered and processed substi
 
 ## Repository Overview
 
+```plaintext
 .
 ├── data/                     # Input data files (e.g., mutation calls, metadata)
 ├── scripts/                  # Analysis scripts for processing and generating plots
 ├── outputs/                  # Generated analysis results and figures
 ├── liver_ndp_tree_building/  # Submodule: Pipeline for phylogenetic tree building (Figure 2a)
 ├── README.md                 # This document
+```
 
 ---
 
