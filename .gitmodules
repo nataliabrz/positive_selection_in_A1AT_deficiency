@@ -1,0 +1,3 @@
+[submodule "liver_ndp_tree_building"]
+	path = liver_ndp_tree_building
+	url = https://github.com/nataliabrz/liver_ndp_tree_building.git
