@@ -4,13 +4,27 @@ This is the code to accompany the paper 'Selection of somatic escape variants in
 
 This code allows reproduction of all analyses from filtered and processed substitution (Caveman) and indel (Pindel) calls to generation of figures used in the manuscript.
 
+## Repository Overview
+
+.
+├── data/                     # Input data files (e.g., mutation calls, metadata)
+├── scripts/                  # Analysis scripts for processing and generating plots
+├── outputs/                  # Generated analysis results and figures
+├── liver_ndp_tree_building/  # Submodule: Pipeline for phylogenetic tree building (Figure 2a)
+├── README.md                 # This document
+
+---
+
 ## Data Availability 
 
-Due to the sensitive nature of the raw sequencing data, whole genome and exome sequencing data have been deposited in the European Genome–phenome Archive (EGA) (https://ega-archive.org/). WGS data have been deposited with EGA accession number EGAD00001015430 and exome sequencing data have been deposited with accession number EGAD00001015431. Existing DNA sequencing datasets from the liver of subjects with steatotic liver disease used in the study are deposited in EGA with accession code: EGAD00001006255. 
+Due to the sensitive nature of the raw sequencing data, whole genome and exome sequencing data have been deposited in the European Genome–phenome Archive (EGA):
 
-The filtered somatic mutation calls used in downstream analyses have been deposited in [Mendeley Data](https://data.mendeley.com/) and can be freely accessed here: https://data.mendeley.com/datasets/vhybvj2g9p/1. These files are provided as the starting point for all analyses in this repository.
+- WGS data: EGAD00001015430 (https://ega-archive.org/studies/EGAD00001015430)
+- Exome data: EGAD00001015431 (https://ega-archive.org/studies/EGAD00001015431)
+- Additional datasets for steatotic liver disease: EGAD00001006255 (https://ega-archive.org/studies/EGAD00001006255)
 
-For further details about how the raw data were processed to generate the somatic mutation calls, please refer to the **Data Processing** section below.
+Filtered somatic mutation calls used in downstream analyses have been deposited in Mendeley Data and can be freely accessed here: https://data.mendeley.com/datasets/vhybvj2g9p/1. These files are provided as the starting point for all analyses in this repository.
+
 
 ## Data Processing
 
@@ -79,14 +93,66 @@ data/calls/wgs_calls.csv
 
 ## 01 Running dN/dS to test for positive selection
 
-This is a single script which takes the calls saved within the data/calls/ folder from Mendeley data and performs positive selection analysis using the dndscv R package.
+- Script: scripts/01_dnds_analysis.R
 
-## 02 Generating plots
+This is a script which takes the calls saved within the data/calls/ folder from Mendeley data and performs positive selection analysis using the dndscv R package.
 
-Within this folder there are subfolders with scripts for generating each figure from the manuscript. Each figure uses downstream data files that are saved within the data/ folder (or from Mendeley data). All generated plots are saved within the outputs/ folder.
+### 02: Generating Plots
+
+The following scripts reproduce the figures in the manuscript:
+
+- Figure 1b: scripts/fig1b_plot.R
+- Figure 1c: scripts/fig1c_plot.R
+- Figure 2a: liver_ndp_tree_building/ (submodule; see below for details).
+- Ext. Figure 2a: scripts/ext_fig2a_plot.R
+- Ext. Figure 3: scripts/ext_fig3_plot.R
+
+All scripts save the generated plots in the outputs/ directory.
+
+---
+
+## Using the Liver Tree-Building Submodule (Figure 2a)
+
+The liver_ndp_tree_building submodule is used to generate phylogenetic trees from NDP clustering results.
+
+### Setting Up the Submodule
+
+To clone the repository with the submodule:
+git clone --recurse-submodules https://github.com/yourusername/paper-repo.git
+
+If you’ve already cloned the repository, initialize and update the submodule:
+git submodule update --init --recursive
+
+Navigate to the submodule:
+cd liver_ndp_tree_building
+
+Follow the instructions in the liver_ndp_tree_building/README.md to run the pipeline.
+
+---
 
 ## Miscellaneous_scripts
 
 The 'Run_dNdS_on_Ng2021_calls.R' script reproduces dNdS analysis on previously published 'Convergent somatic mutations in metabolism genes in chronic liver disease' article. The data supporting the paper can be downloaded from Mendeley at https://data.mendeley.com/datasets/283gy325fk/1. To run the script, place the downloaded object in the cloned repository with the following file structure:
 
 data/calls/x.snv.indel.matt.foad.RData
+
+---
+
+## Dependencies
+
+The following R packages are required for the analysis:
+
+- dndscv
+- ggplot2
+- dplyr
+- data.table
+
+Install them using CRAN or Bioconductor:
+install.packages(c("ggplot2", "dplyr", "data.table"))
+BiocManager::install("dndscv")
+
+---
+
+## Notes on Reproducibility
+
+This repository was designed to ensure reproducibility of all analyses in the manuscript. If you encounter any issues or have questions, please contact the authors.
