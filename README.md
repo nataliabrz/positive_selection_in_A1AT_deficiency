@@ -91,15 +91,14 @@ data/calls/exome_calls.csv
 data/calls/wgs_calls.csv
 
 
-# Notes on downsteam analysis
+### Example Workflow
 
-## 01 Running dN/dS to test for positive selection
+#### Step 1: Running dN/dS to test for positive selection
+```bash
+Rscript scripts/01_dnds_analysis.R
+```
 
-- Script: scripts/01_dnds_analysis.R
-
-This is a script which takes the calls saved within the data/calls/ folder from Mendeley data and performs positive selection analysis using the dndscv R package.
-
-### 02: Generating Plots
+### Step 2: Generating Plots
 
 The following scripts reproduce the figures in the manuscript:
 
@@ -120,13 +119,19 @@ The liver_ndp_tree_building submodule is used to generate phylogenetic trees fro
 ### Setting Up the Submodule
 
 To clone the repository with the submodule:
+```bash
 git clone --recurse-submodules https://github.com/yourusername/paper-repo.git
+```
 
 If you’ve already cloned the repository, initialize and update the submodule:
+```bash
 git submodule update --init --recursive
+```
 
 Navigate to the submodule:
+```bash
 cd liver_ndp_tree_building
+```
 
 Follow the instructions in the liver_ndp_tree_building/README.md to run the pipeline.
 
@@ -141,18 +146,15 @@ data/calls/x.snv.indel.matt.foad.RData
 ---
 
 ## Dependencies
-
-The following R packages are required for the analysis:
-
-- dndscv
-- ggplot2
-- dplyr
-- data.table
+- R (>= 4.3.1)
+- Required R libraries: `dndscv`, `ggplot2` , `dplyr` , `data.table`
 
 Install them using CRAN or Bioconductor:
+
+```R
 install.packages(c("ggplot2", "dplyr", "data.table"))
 BiocManager::install("dndscv")
-
+```
 ---
 
 ## Notes on Reproducibility
