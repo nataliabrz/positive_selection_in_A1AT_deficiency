@@ -117,7 +117,8 @@ Each figure corresponds to an individual RMarkdown script. Run these scripts to 
 
 - Figure 1b: scripts/02_Generating_figures/Generating_Fig1b.R
 - Figure 1c: scripts/02_Generating_figures/Generating_Fig1c.R
-- Figure 2a: liver_ndp_tree_building/ (submodule; see below for details).
+- Figure 2a: scripts/liver_ndp_tree_building/ (submodule; see below for details).
+- Figure 2b: scripts/mapscape_generator/ (submodule; see below for details).
 - Ext. Figure 2a: scripts/02_Generating_figures/Generating_Ext_Fig2a.R
 - Ext. Figure 3: scripts/02_Generating_figures/Generating_Ext_Fig3.R
 
@@ -125,28 +126,44 @@ All scripts save the generated plots in the outputs/ directory.
 
 ---
 
-## Using the Liver Tree-Building Submodule (Figure 2a)
+### Using submodules (Figures 2a and 2b)
 
-The liver_ndp_tree_building submodule is used to generate phylogenetic trees from NDP clustering results.
+This repository uses two submodules:
+   1. liver_ndp_tree_building: Used to cluster mutations based on VAFs and generate phylogenetic trees (Figure 2a).
 
-### Setting Up the Submodule
+   2. mapscape_generator: Used to create patient-specific mapscape visualisations (Figure 2b).
 
-To clone the repository with the submodule:
+##### Setting up submodules
+
+To clone the repository with the submodules:
 ```bash
-git clone --recurse-submodules https://github.com/yourusername/paper-repo.git
+git clone --recurse-submodules https://github.com/nataliabrz/positive_selection_in_A1AT_deficiency.git
 ```
 
-If you’ve already cloned the repository, initialize and update the submodule:
+If you’ve already cloned the repository, initialise and update the submodule:
 ```bash
 git submodule update --init --recursive
 ```
 
+##### Running submodules
+
+**Using the liver_ndp_tree_building submodule (Figure 2a)**
+
 Navigate to the submodule:
 ```bash
-cd liver_ndp_tree_building
+cd scripts/liver_ndp_tree_building
 ```
 
 Follow the instructions in the liver_ndp_tree_building/README.md to run the pipeline.
+
+**Using the mapscape_generator submodule (Figure 2b)**
+
+Navigate to the submodule:
+```bash
+cd scripts/mapscape_generator
+```
+
+Follow the instructions in the mapscape_generator/README.md to run the pipeline.
 
 ---
 
