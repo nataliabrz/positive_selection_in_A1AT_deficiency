@@ -94,13 +94,26 @@ data/calls/wgs_calls.csv
 ### Example Workflow
 
 #### Step 1: Running dN/dS to test for positive selection
+
+   1. Prepare Sequence Context
+
+Run the script to pull the extended sequence context for each mutation. This step generates a dataframe with the extended sequence context, which is required in the next script to identify nearby SNVs (<10bp apart) in phase and collapse them into MNVs. This ensures they are not treated as independent events in the dN/dS algorithm.
+
 ```bash
-Rscript scripts/01_dnds_analysis.R
+Rscript scripts/01_Running_dNdS_positive_selection_analysis/01a_get_sequence_context_for_all_calls.R
+```
+
+   2. Prepare Mutations and Run dN/dS
+
+Next, prepare the mutations by combining WGS and exome calls, collapsing dinucleotides and multinucleotides, and keeping only unique events. Then, run dN/dS analysis to identify genes significantly under positive selection in each disease cohort:
+
+```bash
+Rscript scripts/01_Running_dNdS_positive_selection_analysis/01b_running_dNdS.R
 ```
 
 ### Step 2: Generating Plots
 
-The following scripts reproduce the figures in the manuscript:
+Each figure corresponds to an individual RMarkdown script. Run these scripts to generate the manuscript figures:
 
 - Figure 1b: scripts/fig1b_plot.R
 - Figure 1c: scripts/fig1c_plot.R
