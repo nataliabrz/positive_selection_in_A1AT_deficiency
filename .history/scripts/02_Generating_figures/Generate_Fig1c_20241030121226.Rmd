@@ -64,6 +64,7 @@ gene_info_list <- lapply(RefCDS, extract_info)
 gene_info_df <- do.call(rbind, gene_info_list)
 colnames(gene_info_df) <- c("gene","chr", "pos")
 
+
 ```
 
 Prepare data frame with dN/dS results for genes of interest in A1AD cohort.
@@ -105,15 +106,14 @@ ylim <- manhattan %>%
   pull(ylim)
 
 
-```
-
-```{r plot_result_A1AD}
-
 # Create a dataframe with genes to label
 genes_to_label <- manhattan %>%
   filter((qglobalpos_cv < sigEx & target == "A1AD") | (gene %in% c("ALB","ACVR2A","FOXO1","CIDEB","GPAM","TNRC6B","SERPINA1","HFE") & target == "A1AD")) %>%
   dplyr::select(gene, chr_ordering, bp_cum, label, pglobalpos_cv, qglobalpos_cv)
 
+```
+
+```{r plot_result_A1AD}
 pManhattanA1AD <- ggplot(manhattan |> filter(target == "A1AD"), aes(x = bp_cum, y = -log10(pglobalpos_cv), label = label,
                                   color = factor(chr_ordering), size = -log10(pglobalpos_cv))) +
   #geom_hline(yintercept = -log10(sig), color = "grey40", linetype = "dashed") +
@@ -143,14 +143,20 @@ pManhattanA1AD <- ggplot(manhattan |> filter(target == "A1AD"), aes(x = bp_cum, 
 
 We do the same for the haemochromatosis cohort
 
-```{r plot_result_haemochromatosis}
+```{r prep_data_haemochromatosis}
+
+sig <- 1e-05
 
 genes_to_label <- manhattan %>%
   filter((qglobalpos_cv < sigEx & target == "HH") | (gene %in% c("ALB","ACVR2A","FOXO1","CIDEB","GPAM","TNRC6B","SERPINA1","HFE","FASN") & target == "HH")) %>%
   dplyr::select(gene, chr_ordering, bp_cum, label, pglobalpos_cv, qglobalpos_cv)
 
+```
+
+```{r plot_result_haemochromatosis}
 pManhattanHH <- ggplot(manhattan |> filter(target == "HH"), aes(x = bp_cum, y = -log10(pglobalpos_cv), label = label,
                                   color = factor(chr_ordering), size = -log10(pglobalpos_cv))) +
+  #geom_hline(yintercept = -log10(sig), color = "grey40", linetype = "dashed") +
   geom_point() +
   geom_text_repel(data = genes_to_label, aes(label = gene, fontface = ifelse(qglobalpos_cv < sigEx, "bold", "plain")), colour = "black", size = 3, min.segment.length = 0) +  # Use the genes_to_label dataframe
   #geom_text_repel(colour = "black", size = 3, ylim = c(-log10(sigEx),NA)) +
@@ -177,11 +183,5 @@ pManhattanHH <- ggplot(manhattan |> filter(target == "HH"), aes(x = bp_cum, y = 
 save the plot for both cohorts side by side
 
 ```{r pManhattan, fig.width = 12, fig.height = 3.6}
-pManhattanA1AD + pManhattanHH + plot_annotation(tag_levels = "a")
-
-
-combined_plot <- pManhattanA1AD + pManhattanHH + plot_annotation(tag_levels = 'a')
-# ggsave("outputs/pManhattanA1AD_PDv38is_wgs.pdf", plot = pManhattanA1AD, width = 6, height = 3.6)
-# ggsave("outputs/pManhattanHH_PDv38is_wgs.pdf", plot = pManhattanHH, width = 6, height = 3.6)
-ggsave("outputs/pManhattan_side_by_side.pdf", plot = combined_plot, width = 12, height = 3.6)
+pManhattanA1AD + pManhattanHH + plot_annotation(tag_levels = 'a')
 ```

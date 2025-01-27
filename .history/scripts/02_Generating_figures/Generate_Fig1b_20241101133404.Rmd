@@ -8,6 +8,8 @@ output: html_document
 # Load libraries
 
 ```{r, message=FALSE}
+rm(list=ls())
+
 library(dplyr)
 library(data.table)
 library(GenomicRanges)
@@ -20,7 +22,7 @@ library(ggplot2)
 # Load and prepare files
 
 ```{r}
-wgs_calls <- read.table("data/calls/wgs_calls.csv", sep = ",", stringsAsFactors = F, header = T)
+wgs_calls <- read.table("data/calls/wgs_calls_v2.csv", sep = ",", stringsAsFactors = F, header = T)
 
 donor_info <- read.table("data/metadata_files/A1AD_patient_info_2019-10-30.csv", sep = ",", stringsAsFactors = F, header = T) |>
   dplyr::rename(internal_id=Donor,
@@ -28,7 +30,7 @@ donor_info <- read.table("data/metadata_files/A1AD_patient_info_2019-10-30.csv",
 
 lcm_database <-  fread("data/metadata_files/lcm_cut_metadata.tsv", sep="\t", header=T, data.table=F) 
 
-exome_calls <- read.table("data/calls/exome_calls.csv", sep = ",", stringsAsFactors = F, header = T)
+exome_calls <- read.table("data/calls/exome_calls_v3.csv", sep = ",", stringsAsFactors = F, header = T)
 
 bed <- read.table("data/reference_files/lcm_exome_callable_bait_set.bed",sep="\t",header=T)
 
@@ -145,7 +147,7 @@ counts_plot <- ggplot(all_data_sorted, aes(x=internal_id, y=snv_count, fill=pape
   theme(strip.text.x = element_text(angle = 45)) +
   theme(legend.position = "none") +
   facet_grid(~paper_donor, switch = "x", scales = "free_x", space = "free_x")    +
-  scale_y_continuous(expand = c(0, 0), limits = c(0, max(all_data_sorted$snv_count)+5)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 150)) +
   labs( x="Sample",y = "Mutations per exome",  size = 0.9)  +
   theme(panel.spacing=unit(4,"pt"),  panel.border=element_rect(colour="white", fill=NA))
 counts_plot

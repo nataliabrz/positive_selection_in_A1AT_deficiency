@@ -7,15 +7,15 @@ library(gridExtra)
 #### Plot VAF distributions of the unmerged cluster pairs
 ################################
 
-all_calls <- fread("data/calls/wgs_calls_PDv38is_wgs.csv", sep = ",") %>%
+PD51606_calls <- fread("data/calls/wgs_calls_PDv38is_wgs.csv", sep = ",") %>%
   dplyr::rename(chr = Chrom,
                 pos = Pos,
                 ref = Ref,
                 mut = Alt) %>%
-  dplyr::select(sampleID,chr,pos,ref,mut,mut_id,coverage,Mut_Frags,vaf,Project,cluster_id) 
-
-PD51606_calls <- all_calls %>%
-  filter(grepl("PD51606",sampleID)) 
+  dplyr::select(sampleID,chr,pos,ref,mut,mut_id,coverage,Mut_Frags,vaf,Project,cluster_id) %>%
+  filter(coverage > 10,
+         chr %in% paste0("chr", 1:22),
+         grepl("PD51606",sampleID)) 
 
 cluster_pairs <- list(c(9, 51), c(8, 15), c(35, 7), c(22, 1), c(12, 18))
 
@@ -73,7 +73,7 @@ for (pair in cluster_pairs) {
     theme_minimal() +
     facet_wrap(~sampleID) +  # Facet by sampleID for separate plots
     geom_vline(data = medians, aes(xintercept = median_vaf, color = as.factor(cluster_id)),
-               linetype = "dashed", linewidth = 0.5, alpha = 0.5)  # Add dashed vertical lines at medians
+               linetype = "dashed", size = 0.5, alpha = 0.5)  # Add dashed vertical lines at medians
   
   # Add the plot to the list
   plot_list[[paste0("Pair_", pair[1], "_vs_", pair[2])]] <- plot
@@ -257,8 +257,6 @@ cleaned_muts
 
 #############################################
 
-#############################################
-
 all_calls <- fread("/lustre/scratch126/casm/team154pc/nb15/liver/data/HH_A1AD_rerun/2792/beta_binomial/snv/ndp_out/PD51606_bb_pass_snvs_all.csv",sep=",")
 only_called <- fread("/lustre/scratch126/casm/team154pc/nb15/liver/data/HH_A1AD_rerun/2792/beta_binomial/snv/dnds_out/PD51606_bb_pass_snvs_dnds_input.csv",sep=",")
 
@@ -285,25 +283,3 @@ output_file <- "/lustre/scratch126/casm/team154pc/nb15/liver/data/HH_A1AD_rerun/
 
 # Write to file, ensuring no row names, tab-delimited, and include header
 fwrite(bed_data, output_file, sep = "\t", col.names = TRUE)
-
-
-#############################################
-#### check if the same sites appear across patients
-#############################################
-
-ca_clusters <- c(9, 8, 35, 22, 12)
-
-
-# Get unique mutation sites in ca_mutations
-unique_ca_mutations <- ca_mutations %>%
-  distinct(chr, pos)
-
-# Find matching sites in all_calls from other patients
-common_mutations <- all_calls %>%
-  filter((chr %in% unique_ca_mutations$chr) & (pos %in% unique_ca_mutations$pos)) %>%
-  filter(!grepl("PD51606",sampleID))
-
-# View the first few results
-head(common_mutations)
-nrow(common_mutations)
-length(unique(paste0(common_mutations$chr,"_",common_mutations$pos)))
