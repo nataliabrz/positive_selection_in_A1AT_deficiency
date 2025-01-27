@@ -90,9 +90,9 @@ data/calls/exome_calls.csv
 data/calls/wgs_calls.csv
 
 
-### Example Workflow
+## Example Workflow
 
-#### Step 1: Running dN/dS to test for positive selection
+### Step 1: Running dN/dS to test for positive selection
 
    1. Prepare Sequence Context
 
@@ -124,16 +124,15 @@ Each figure corresponds to an individual RMarkdown script, or its own submodule.
 
 All scripts save the generated plots in the outputs/ directory.
 
----
 
-### Using submodules (Figures 2a and 2b)
+#### Using submodules (Figures 2a and 2b)
 
 This repository uses two submodules:
    1. liver_ndp_tree_building: Used to cluster mutations based on VAFs and generate phylogenetic trees (Figure 2a).
 
    2. mapscape_generator: Used to create patient-specific mapscape visualisations (Figure 2b).
 
-##### Setting up submodules
+**Setting up submodules**
 
 To clone the repository with the submodules:
 ```bash
@@ -145,9 +144,9 @@ If you’ve already cloned the repository, initialise and update the submodule:
 git submodule update --init --recursive
 ```
 
-##### Running submodules
+**Running submodules**
 
-**Using the liver_ndp_tree_building submodule (Figure 2a)**
+##### Using the liver_ndp_tree_building submodule (Figure 2a)
 
 Navigate to the submodule:
 ```bash
