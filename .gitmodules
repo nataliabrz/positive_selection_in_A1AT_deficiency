@@ -1,3 +1,6 @@
 [submodule "scripts/liver_ndp_tree_building"]
 	path = scripts/liver_ndp_tree_building
 	url = https://github.com/nataliabrz/liver_ndp_tree_building.git
+[submodule "scripts/mapscape_generator"]
+	path = scripts/mapscape_generator
+	url = https://github.com/nataliabrz/mapscape_generator.git
