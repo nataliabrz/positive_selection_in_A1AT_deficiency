@@ -11,7 +11,6 @@ This code allows reproduction of all analyses from filtered and processed substi
 ├── data/                     # Input data files (e.g., mutation calls, metadata)
 ├── scripts/                  # Analysis scripts for processing and generating plots
 ├── outputs/                  # Generated analysis results and figures
-├── liver_ndp_tree_building/  # Submodule: Pipeline for phylogenetic tree building (Figure 2a)
 ├── README.md                 # This document
 ```
 
@@ -113,14 +112,15 @@ Rscript scripts/01_Running_dNdS_positive_selection_analysis/01b_running_dNdS.R
 
 ### Step 2: Generating Plots
 
-Each figure corresponds to an individual RMarkdown script. Run these scripts to generate the manuscript figures:
+Each figure corresponds to an individual RMarkdown script, or its own submodule. Run these scripts to generate the manuscript figures:
 
-- Figure 1b: scripts/02_Generating_figures/Generating_Fig1b.R
-- Figure 1c: scripts/02_Generating_figures/Generating_Fig1c.R
+- Figure 1b: scripts/02_Generating_figures/Generate_Fig1b.R
+- Figure 1c: scripts/02_Generating_figures/Generate_Fig1c.R
 - Figure 2a: scripts/liver_ndp_tree_building/ (submodule; see below for details).
 - Figure 2b: scripts/mapscape_generator/ (submodule; see below for details).
-- Ext. Figure 2a: scripts/02_Generating_figures/Generating_Ext_Fig2a.R
-- Ext. Figure 3: scripts/02_Generating_figures/Generating_Ext_Fig3.R
+- Figure 3a: scripts/02_Generating_figures/Generate_Fig3a.Rmd
+- Ext. Figure 2a: scripts/02_Generating_figures/Generate_Ext_Fig2a.R
+- Ext. Figure 3: scripts/02_Generating_figures/Generate_Ext_Fig3.R
 
 All scripts save the generated plots in the outputs/ directory.
 
