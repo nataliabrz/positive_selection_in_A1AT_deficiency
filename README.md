@@ -115,11 +115,11 @@ Rscript scripts/01_Running_dNdS_positive_selection_analysis/01b_running_dNdS.R
 
 Each figure corresponds to an individual RMarkdown script. Run these scripts to generate the manuscript figures:
 
-- Figure 1b: scripts/fig1b_plot.R
-- Figure 1c: scripts/fig1c_plot.R
+- Figure 1b: scripts/02_Generating_figures/Generating_Fig1b.R
+- Figure 1c: scripts/02_Generating_figures/Generating_Fig1c.R
 - Figure 2a: liver_ndp_tree_building/ (submodule; see below for details).
-- Ext. Figure 2a: scripts/ext_fig2a_plot.R
-- Ext. Figure 3: scripts/ext_fig3_plot.R
+- Ext. Figure 2a: scripts/02_Generating_figures/Generating_Ext_Fig2a.R
+- Ext. Figure 3: scripts/02_Generating_figures/Generating_Ext_Fig3.R
 
 All scripts save the generated plots in the outputs/ directory.
 
