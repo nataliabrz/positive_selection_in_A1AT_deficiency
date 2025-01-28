@@ -1,6 +1,6 @@
 # positive_selection_in_A1AT_deficiency
 
-This is the code to accompany the paper 'Selection of somatic escape variants in SERPINA1 in liver tissue of patients with alpha-1 anti-trypsin deficiency'.
+This is the code to accompany the paper 'Selection for somatic escape variants in SERPINA1 in the liver of patients with alpha-1 anti-trypsin deficiency', published in Nature Genetics (2025).
 
 This code allows reproduction of all analyses from filtered and processed substitution (Caveman) and indel (Pindel) calls to generation of figures used in the manuscript.
 
