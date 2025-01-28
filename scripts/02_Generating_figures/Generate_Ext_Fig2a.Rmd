@@ -33,14 +33,7 @@ donor_info <- read.table("data/metadata_files/A1AD_patient_info_2019-10-30.csv",
   dplyr::rename(internal_id=Donor,
          age=Age)
 
-lcm_database <-  fread("data/metadata_files/2792_lcm_cut_metadata.tsv", sep="\t", header=T, data.table=F) |>
-  mutate(Project=2792) |>
-  bind_rows(fread("data/metadata_files/2814_lcm_cut_metadata.tsv", sep="\t", header=T, data.table=F) %>% mutate(Project=2814)) |>
-  bind_rows(fread("data/metadata_files/3131_lcm_cut_metadata.tsv", sep="\t", header=T, data.table=F) %>% mutate(Project=3131)) |>
-  mutate(Feature="parenchyma") |>
-  dplyr::rename(sampleID=PD.ID) |>
-  dplyr::select(Project,sampleID,Feature,MEAN_COVERAGE,MEAN_TARGET_COVERAGE,MEAN_BAIT_COVERAGE) |>
-  distinct()
+lcm_database <-  fread("data/metadata_files/lcm_cut_metadata.tsv", sep="\t", header=T, data.table=F) 
 
 ```
 
