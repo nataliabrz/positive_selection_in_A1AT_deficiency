@@ -241,21 +241,19 @@ coding_plot <- ggplot(annotmuts, aes(x = sampleID, fill = impact)) +
         axis.text.x=element_blank(),
         panel.grid.minor = element_blank()) +
   theme(panel.spacing = unit(4, "pt"), panel.border = element_rect(colour = "white", fill = NA))
-coding_plot
-ggsave(plot = coding_plot, filename = "outputs/coding_mut_counts_per_exome_in_callable_bed.pdf", width = 12, height = 4, useDingbats = F)
 
 
 # Combine the plots using patchwork
 combined_plot_2 <- coverage_plot / coding_plot + 
   plot_layout(heights = c(1, 3))
 combined_plot_2
-ggsave(plot = combined_plot_2, filename = "outputs/coding_mut_counts_per_exome_in_callable_bed_with_coverage.pdf", width = 15, height = 5, useDingbats = F)
+ggsave(plot = combined_plot_2, filename = "outputs/figures/Fig1b_coding_mut_counts_per_exome_in_callable_bed_with_coverage.pdf", width = 15, height = 5, useDingbats = F)
 
 
 ```
 
 
-# Plot Extended Fig. 2 - signature exposures from exomes
+# Plot Extended Fig. 2b - signature exposures from exomes
 
 ```{r}
 library(tidyverse)
@@ -307,7 +305,7 @@ exposures_plot <- ggplot(exposures_long, aes(x = sampleID, y = proportion, fill 
 
 exposures_plot
 
-ggsave(plot = exposures_plot, filename = "outputs/signature_exposure_proportions_per_exome_lcm_sample_all.pdf", width = 12, height = 4, useDingbats = F)
+ggsave(plot = exposures_plot, filename = "outputs/figures/Ext_Fig2b_signature_exposure_proportions_per_exome_lcm_sample.pdf", width = 12, height = 4, useDingbats = F)
 
 coding_plot / exposures_plot
 

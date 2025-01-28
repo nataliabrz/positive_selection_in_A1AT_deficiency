@@ -20,23 +20,22 @@ library(egg)
 library(patchwork)
 library(plyr)
 library(scales)
-# library(ggpubr)
 library(purrr)
 library(tidyverse)
 library(data.table)
 
-dndsPath <- "outputs/"
+dndsPath <- "outputs/dnds/"
 
 refCDSpath <- "data/reference_files/refcds_GRCh38-GencodeV18+Appris.rda"
 load(refCDSpath)
 
-LCM_calls_path <- "outputs/combined_collapsed_dnds_input.tsv"
+LCM_calls_path <- "outputs/dnds/combined_collapsed_dnds_input.tsv"
 
-outputPath <- "outputs/"
+outputPath <- "outputs/figures/"
 
 ## load dnds object to annotate muts and colour by impact
-annotmuts <- fread("outputs/A1AD_dndsout_annotmuts.tsv", sep="\t")
-sel_cv <- fread("outputs/A1AD_dndsout_selcv.tsv", sep="\t")
+annotmuts <- fread("outputs/dnds/A1AD_dndsout_annotmuts.tsv", sep="\t")
+sel_cv <- fread("outputs/dnds/A1AD_dndsout_selcv.tsv", sep="\t")
 
 cohort <- "A1AD" # swap for "HH" to plot mutations in the haemochromatosis cohort
 
@@ -363,14 +362,10 @@ if(cohort=="HH"){
   cohort <- "Haemochromatosis"
 }
 
-# goi <- goiFull
 goi <- goiInterest
-#goi <- "SERPINA1"
 
 #Plot Settings
-#Set height of coverage y-axis
-#yMax = max(totTargCov$cov)+500
-#True means drop non-coding (intronic) mutations, False means keep (will show at exon borders)
+
 filterNonCoding = T
 #Controls how spaced variant points will be. If you change pdf output size, you may need to adjust this
 pointWidth = 0.017
@@ -420,11 +415,10 @@ if(nrow(gene)>0){
   )
 }
 
+# save the SERPINA1 mutations for easy access when needed
 if ( goi[g] == "SERPINA1") {
-write.table(gene,"outputs/SERPINA1_annotmuts.tsv",sep="\t",col.names=T,row.names=F,quote=F)
+write.table(gene,"outputs/dnds/SERPINA1_annotmuts.tsv",sep="\t",col.names=T,row.names=F,quote=F)
 }
-  #mutate(impact = ifelse(name == "mnv", "Missense", impact)) |>#|>
-  #mutate(label = replace_na(label, " ")) |>
 
    # Set label position with lolliplot functions
   if(nrow(gene0)>0){
@@ -531,9 +525,9 @@ write.table(gene,"outputs/SERPINA1_annotmuts.tsv",sep="\t",col.names=T,row.names
   print(pCov/pDomains + plot_layout(heights = c(15,2)))
 
   if(filterNonCoding == T){
-  filename <- paste0(outputPath, goi[g],"_lcm_lollipop_",cohort,"_cohort.pdf")  
+  filename <- paste0(outputPath, "Fig3a_",goi[g],"_lolliplot_",cohort,"_cohort.pdf")  
   }else{
-  filename <- paste0(outputPath, goi[g],"_noncoding_unfiltered_lcm_lollipop_",cohort,"_cohort.pdf")
+  filename <- paste0(outputPath, goi[g],"_lcm_lolliplot_with_noncoding_muts_",cohort,"_cohort.pdf")
   }
   
   pdf(filename, height = 3.9, width = 11)

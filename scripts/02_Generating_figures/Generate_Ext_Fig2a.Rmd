@@ -8,8 +8,6 @@ output: html_document
 
 ```{r, message=FALSE}
 
-rm(list=ls())
-
 library(readxl)
 library(stringr)
 library(data.table)
@@ -20,9 +18,7 @@ library(tidyr)
 library(dplyr)
 ```
 
-```{r}
-homedir <- "/lustre/scratch126/casm/team154pc/nb15/liver/"
-```
+Read in data
 
 ```{r}
 
@@ -33,14 +29,14 @@ exome_calls <- fread("data/calls/exome_calls.csv",sep=",") %>%
 samples <- unique(exome_calls$sampleID)
 donors <- unique(substr(samples,1,7))
 
-donor_info <- read.table(paste0(homedir,"/A1AD_manuscript/A1AD_patient_info_2019-10-30.csv"), sep = ",", stringsAsFactors = F, header = T) |>
+donor_info <- read.table("data/metadata_files/A1AD_patient_info_2019-10-30.csv", sep = ",", stringsAsFactors = F, header = T) |>
   dplyr::rename(internal_id=Donor,
          age=Age)
 
-lcm_database <-  fread(paste0(homedir,"A1AD_manuscript/2792_lcm_cut_metadata.tsv"), sep="\t", header=T, data.table=F) |>
+lcm_database <-  fread("data/metadata_files/2792_lcm_cut_metadata.tsv", sep="\t", header=T, data.table=F) |>
   mutate(Project=2792) |>
-  bind_rows(fread(paste0(homedir,"A1AD_manuscript/2814_lcm_cut_metadata.tsv"), sep="\t", header=T, data.table=F) %>% mutate(Project=2814)) |>
-  bind_rows(fread(paste0(homedir,"A1AD_manuscript/3131_lcm_cut_metadata.tsv"), sep="\t", header=T, data.table=F) %>% mutate(Project=3131)) |>
+  bind_rows(fread("data/metadata_files/2814_lcm_cut_metadata.tsv", sep="\t", header=T, data.table=F) %>% mutate(Project=2814)) |>
+  bind_rows(fread("data/metadata_files/3131_lcm_cut_metadata.tsv", sep="\t", header=T, data.table=F) %>% mutate(Project=3131)) |>
   mutate(Feature="parenchyma") |>
   dplyr::rename(sampleID=PD.ID) |>
   dplyr::select(Project,sampleID,Feature,MEAN_COVERAGE,MEAN_TARGET_COVERAGE,MEAN_BAIT_COVERAGE) |>
@@ -117,6 +113,6 @@ combined_plot <- subs / indels +
 
 print(combined_plot)
 
-ggsave(plot = combined_plot, filename = "outputs/Brunner_burden_fig_reproduced_exomes.pdf", width = 8, height = 6, useDingbats = F)
+ggsave(plot = combined_plot, filename = "outputs/figures/Ext_Fig2a_exome_burden.pdf", width = 8, height = 6, useDingbats = F)
 
 ```

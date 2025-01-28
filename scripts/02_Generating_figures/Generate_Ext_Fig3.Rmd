@@ -15,7 +15,6 @@ library(data.table)
 ```
 
 ```{r setup, include=FALSE}
-homedir <- "/lustre/scratch126/casm/team154pc/nb15/liver/"
 
 exome_samples <- c("PD60232","PD60233","PD60802","PD60803")
 
@@ -42,7 +41,7 @@ exome_calls <- fread("data/calls/exome_calls.csv", sep = ",") %>%
 
 all_calls <- rbind(exome_calls, wgs_calls)
 
-annotmuts <- fread("outputs/A1AD_dndsout_annotmuts.tsv", sep="\t")
+annotmuts <- fread("outputs/dnds/A1AD_dndsout_annotmuts.tsv", sep="\t")
 
 ```
 
@@ -177,12 +176,14 @@ for(i in seq_len(nrow(SERPINA1))){
 }
 
 grid <- plot_grid(plotlist=plot_list,nrow=7)
-ggsave("outputs/VAF_density_plots_filtered.pdf", grid, width = 8.27, height = 11.69, units = "in")
+ggsave("outputs/figures/Ext_Fig3_VAF_density_plots.pdf", grid, width = 8.27, height = 11.69, units = "in")
 
 ```
 
-#VAF histograms like in endometrium paper
+Additional rebuttal analysis
+#plot overlapped VAF histograms for each lcm sample to summarise clonality
 
+load additional libraries
 ```{r}
 library(tidyr)
 library(purrr)
@@ -191,6 +192,10 @@ library(hrbrthemes)
 library(viridis)
 library(ggridges)
 
+```
+
+[plot for whole genome samples]
+```{r}
 # Generate a unique list of donor IDs
 donors <- unique(substr(wgs_calls$sampleID, 1, 7))
 
@@ -248,7 +253,10 @@ vaf_plot <- ggplot(all_donors_data, aes(x=vaf, y=sampleID, fill=donorID, group=s
   ) +
   labs(x = "VAF", y = NULL) 
   
-ggsave("outputs/vaf_multi_density_plots_wgs.pdf", plot = vaf_plot)
+ggsave("outputs/figures/vaf_multi_density_plots_wgs.pdf",
+       plot = vaf_plot,
+       width = 10.5,
+       height = 6)
       
 ```
 
@@ -310,7 +318,8 @@ exome_vaf_plot <- ggplot(all_donors_data, aes(x=vaf, y=sampleID, fill=donorID, g
   ) +
   labs(x = "VAF", y = NULL) 
   
-ggsave("outputs/vaf_multi_density_plots_exome.pdf", plot = exome_vaf_plot)
-
-
+ggsave("outputs/figures/vaf_multi_density_plots_exome.pdf", 
+       plot = exome_vaf_plot,
+       width = 14,
+       height = 8)
 ```

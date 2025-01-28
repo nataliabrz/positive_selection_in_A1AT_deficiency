@@ -41,10 +41,9 @@ Read the input files
 refcds_38 <- "data/reference_files/refcds_GRCh38-GencodeV18+Appris.rda"
 load(refcds_38)
 
-selcvHH <- read.table("outputs/HH_dndsout_selcv.tsv",sep="\t",header=T)
-selcvA1AD <- read.table("outputs/A1AD_dndsout_selcv.tsv",sep="\t",header=T)
+selcvHH <- read.table("outputs/dnds/HH_dndsout_selcv.tsv",sep="\t",header=T)
+selcvA1AD <- read.table("outputs/dnds/A1AD_dndsout_selcv.tsv",sep="\t",header=T)
 
-outpath <- "outputs/"
 ```
 
 
@@ -181,7 +180,6 @@ pManhattanA1AD + pManhattanHH + plot_annotation(tag_levels = "a")
 
 
 combined_plot <- pManhattanA1AD + pManhattanHH + plot_annotation(tag_levels = 'a')
-# ggsave("outputs/pManhattanA1AD_PDv38is_wgs.pdf", plot = pManhattanA1AD, width = 6, height = 3.6)
-# ggsave("outputs/pManhattanHH_PDv38is_wgs.pdf", plot = pManhattanHH, width = 6, height = 3.6)
-ggsave("outputs/pManhattan_side_by_side.pdf", plot = combined_plot, width = 12, height = 3.6)
+
+ggsave("outputs/figures/Fig1c_dnds_pManhattan.pdf", plot = combined_plot, width = 12, height = 3.6)
 ```

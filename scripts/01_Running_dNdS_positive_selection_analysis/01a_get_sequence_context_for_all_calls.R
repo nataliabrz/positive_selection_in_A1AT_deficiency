@@ -52,6 +52,6 @@ out.table <- bind_cols(this.pos.list, out_seqs)
 colnames(out.table) <- c("chr", "pos", "ref", "mut", "CONTEXT")
 
 # write the table to file
-write.table(out.table, file = "outputs/all_calls_mut_context_GRCh38.txt", quote = F, row.names = F, sep = "\t")
+write.table(out.table, file = "outputs/dnds/all_calls_mut_context_GRCh38.txt", quote = F, row.names = F, sep = "\t")
 
 

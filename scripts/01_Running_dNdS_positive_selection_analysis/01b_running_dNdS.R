@@ -98,7 +98,7 @@ close_snvs_nonadjacent[, chr := sub("chr", "", chr)]
 unique_pos_ids <- unique(close_snvs_nonadjacent$pos_id)
 num_unique_pos_ids <- length(unique_pos_ids)
 
-context <- fread("outputs/all_calls_mut_context_GRCh38.txt") %>%
+context <- fread("outputs/dnds/all_calls_mut_context_GRCh38.txt") %>%
   mutate(chr = gsub("chr", "", chr))
 
 mutations <- mutations %>%
@@ -160,7 +160,7 @@ final_muts <- mutations_collapsed %>%
   distinct()
 
 
-write.table(x = final_muts, file = "outputs/combined_collapsed_dnds_input.tsv",
+write.table(x = final_muts, file = "outputs/dnds/combined_collapsed_dnds_input.tsv",
             sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 
 # loading dndscv covariats
@@ -202,23 +202,23 @@ for (i in seq_along(cohorts)) {
                     kc = exc_ind_all,
                     onesided = TRUE)
 
-  saveRDS(dndsout, file = paste0("outputs/", cohorts[i], "_dndsout.rds"))
+  #saveRDS(dndsout, file = paste0("outputs/dnds/", cohorts[i], "_dndsout.rds"))
   write.table(dndsout$sel_cv,
-              paste0("outputs/", cohorts[i], "_dndsout_selcv.tsv"),
+              paste0("outputs/dnds/", cohorts[i], "_dndsout_selcv.tsv"),
               sep = "\t", col.names = T, row.names = F, quote = F)
-  write.table(dndsout$annotmuts, paste0("outputs/", cohorts[i], "_dndsout_annotmuts.tsv"), sep = "\t", col.names = T, row.names = F, quote = F)
+  write.table(dndsout$annotmuts, paste0("outputs/dnds/", cohorts[i], "_dndsout_annotmuts.tsv"), sep = "\t", col.names = T, row.names = F, quote = F)
 
   ## test for recurrent hotspots
   sitednds_liver <- sitednds(dndsout, method = "LNP")
   head(sitednds_liver$recursites)
 
-  write.table(sitednds_liver$recursites, paste0("outputs/", cohorts[i], "_sitednds_recursites.tsv"), sep = "\t", col.names = T, row.names = F, quote = F)
+  write.table(sitednds_liver$recursites, paste0("outputs/dnds/", cohorts[i], "_sitednds_recursites.tsv"), sep = "\t", col.names = T, row.names = F, quote = F)
 }
 
 # get confidence intervals for selected genes
 
 for (i in 1:seq_along(cohorts)) {
-  dndsout <- readRDS(paste0("outputs/", cohorts[i], "_dndsout.rds"))
+  #dndsout <- readRDS(paste0("outputs/dnds/", cohorts[i], "_dndsout.rds"))
   geneci <- geneci(dndsout, gene_list = c("SERPINA1", "ACVR2A", "CIDEB", "GPAM", "FOXO1"), level = 0.95)
-  write.table(geneci, paste0("outputs/", cohorts[i], "_per_gene_ci.tsv"), sep = "\t", col.names = T, row.names = F, quote = F)
+  write.table(geneci, paste0("outputs/dnds/", cohorts[i], "_per_gene_ci.tsv"), sep = "\t", col.names = T, row.names = F, quote = F)
 }
