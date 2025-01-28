@@ -197,4 +197,4 @@ remotes::install_git("https://git.sr.ht/~hrbrmstr/ggchicklet")
 
 ## Notes on Reproducibility
 
-This repository was designed to ensure reproducibility of all analyses in the manuscript. If you encounter any issues or have questions, please contact the authors.
+This repository was designed to ensure reproducibility of all analyses in the manuscript. If you encounter any issues or have questions, please contact the author at nb15@sanger.ac.uk.
