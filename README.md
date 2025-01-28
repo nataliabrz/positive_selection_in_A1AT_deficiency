@@ -114,15 +114,15 @@ Rscript scripts/01_Running_dNdS_positive_selection_analysis/01b_running_dNdS.R
 
 Each figure corresponds to an individual RMarkdown script, or its own submodule. Run these scripts to generate the manuscript figures:
 
-- Figure 1b: scripts/02_Generating_figures/Generate_Fig1b.R
-- Figure 1c: scripts/02_Generating_figures/Generate_Fig1c.R
-- Figure 2a: scripts/liver_ndp_tree_building/ (submodule; see below for details).
-- Figure 2b: scripts/mapscape_generator/ (submodule; see below for details).
-- Figure 3a: scripts/02_Generating_figures/Generate_Fig3a.Rmd
-- Ext. Figure 2a: scripts/02_Generating_figures/Generate_Ext_Fig2a.R
-- Ext. Figure 3: scripts/02_Generating_figures/Generate_Ext_Fig3.R
+- Figure 1b: `scripts/02_Generating_figures/Generate_Fig1b.Rmd`
+- Figure 1c: `scripts/02_Generating_figures/Generate_Fig1c.Rmd`
+- Figure 2a: `scripts/liver_ndp_tree_building/` (submodule; see below for details).
+- Figure 2b: `scripts/mapscape_generator/` (submodule; see below for details).
+- Figure 3a: `scripts/02_Generating_figures/Generate_Fig3a.Rmd`
+- Ext. Figure 2a: `scripts/02_Generating_figures/Generate_Ext_Fig2a.Rmd`
+- Ext. Figure 3: `scripts/02_Generating_figures/Generate_Ext_Fig3.Rmd`
 
-All scripts save the generated plots in the outputs/ directory.
+All scripts save the generated plots in the outputs/figures/ directory.
 
 
 #### Using submodules (Figures 2a and 2b)
@@ -166,7 +166,7 @@ Follow the instructions in the mapscape_generator/README.md to run the pipeline.
 
 ## Miscellaneous_scripts
 
-The 'Run_dNdS_on_Ng2021_calls.R' script reproduces dNdS analysis on previously published 'Convergent somatic mutations in metabolism genes in chronic liver disease' article. The data supporting the paper can be downloaded from Mendeley at https://data.mendeley.com/datasets/283gy325fk/1. To run the script, place the downloaded object in the cloned repository with the following file structure:
+The 'Run_dNdS_on_Ng2021_calls.R' script reproduces dN/dS analysis on previously published 'Convergent somatic mutations in metabolism genes in chronic liver disease' article. The data supporting the paper can be downloaded from Mendeley at https://data.mendeley.com/datasets/283gy325fk/1. To run the script, place the downloaded object in the cloned repository with the following file structure:
 
 data/calls/x.snv.indel.matt.foad.RData
 
@@ -174,13 +174,21 @@ data/calls/x.snv.indel.matt.foad.RData
 
 ## Dependencies
 - R (>= 4.3.1)
-- Required R libraries: `dndscv`, `ggplot2` , `dplyr` , `data.table`
+- Required R libraries: `data.table`, `dplyr`, `BSgenome.Hsapiens.UCSC.hg38`, `GenomicRanges`, `Biostrings`, `stringr`, `dndscv`, `vcfR`, `deepSNV`, `readxl`, `ggplot2`, `patchwork`, `tidyr`, `cowplot`, `purrr`, `moments`, `hrbrthemes`, `viridis`, `ggridges`, `tidyverse`, `seqinr`, `ggrepel`, `ggtext`, `httr`, `org.Hs.eg.db`, `MetBrewer`, `egg`, `plyr`, `scales`, `ggchicklet`.
 
-Install them using CRAN or Bioconductor:
+Install them using CRAN, Bioconductor or other repositories:
 
 ```R
-install.packages(c("ggplot2", "dplyr", "data.table"))
-BiocManager::install("dndscv")
+install.packages(c("data.table", "dplyr", "stringr", "vcfR", "deepSNV", "readxl", "ggplot2", "patchwork", "tidyr", "cowplot", "purrr", "moments", "hrbrthemes", "viridis", "ggridges", "tidyverse", "seqinr", "ggrepel", "ggtext", "httr", "MetBrewer", "egg", "plyr", "scales"))
+BiocManager::install(c("BSgenome.Hsapiens.UCSC.hg38", "GenomicRanges", "Biostrings", "org.Hs.eg.db"))
+
+# Install dndscv from GitHub
+library(devtools)
+install_github("im3sanger/dndscv")
+
+# Install ggchicklet from a custom repository
+remotes::install_git("https://git.sr.ht/~hrbrmstr/ggchicklet")
+
 ```
 ---
 
