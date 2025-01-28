@@ -7,7 +7,7 @@ library("data.table")
 
 ### collect calls
 
-load("data/calls/x.snv.indel.matt.foad.RData")
+load("data/calls/x.snv.indel.matt.foad.RData") # loads an object called x
 wgs_calls <- x %>%
   rename(chr = chrom,
          lcmID = sample,
@@ -54,14 +54,14 @@ print(paste0(nrow(wgs_calls) - nrow(mutations)," SNVs were collapsed into ",
 rm(wgs_calls)
 
 
-
 # Subset to unique mutations per clone (wgs) or donor (exome)
 final_muts <- mutations %>%
   dplyr::select(sampleID, chr, pos, ref, mut) %>%
   distinct()
 
 
-write.table(x = final_muts, file = "outputs/sld_combined_collapsed_dnds_input.tsv",
+write.table(x = final_muts, 
+            file = "outputs/dnds/SLD_combined_collapsed_dnds_input.tsv",
             sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 
 # loading dndscv covariats
@@ -69,9 +69,9 @@ covs <- file.path("data", "reference_files",
                   "covariates_20pc_GRCh37-38.epi_strict_outliers.Rdat")
 
 load(covs) # it loads and object called scores
+
+# load the GRCh37 refCDS as the calls are on GRCh37
 refcds_37 <- "data/reference_files/refcds_GRCh37-GencodeV18+Appris.rda"
-
-
 
   print("initializing...")
   dndsout_init <- dndscv(final_muts, refdb = refcds_37, cv = scores,
@@ -90,20 +90,31 @@ refcds_37 <- "data/reference_files/refcds_GRCh37-GencodeV18+Appris.rda"
                     kc = exc_ind_all,
                     onesided = TRUE)
 
-  saveRDS(dndsout, file = paste0("outputs/SLD_dndsout.rds"))
+  # save per-gene result
   write.table(dndsout$sel_cv,
-              paste0("outputs/SLD_dndsout_selcv.tsv"),
-              sep = "\t", col.names = T, row.names = F, quote = F)
-  write.table(dndsout$annotmuts, paste0("outputs/SLD_dndsout_annotmuts.tsv"), sep = "\t", col.names = T, row.names = F, quote = F)
+              paste0("outputs/dnds/SLD_dndsout_selcv.tsv"),
+              sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
+  
+  # save annotated mutations
+  write.table(dndsout$annotmuts,
+              paste0("outputs/dnds/SLD_dndsout_annotmuts.tsv"),
+              sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
 
   ## test for recurrent hotspots
   sitednds_liver <- sitednds(dndsout, method = "LNP")
   head(sitednds_liver$recursites)
 
-  write.table(sitednds_liver$recursites, paste0("outputs/SLD_sitednds_recursites.tsv"), sep = "\t", col.names = T, row.names = F, quote = F)
+  # save sitednds result
+  write.table(sitednds_liver$recursites, 
+              paste0("outputs/dnds/SLD_sitednds_recursites.tsv"), 
+              sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
 
-# get confidence intervals for selected genes
+  # get confidence intervals for selected genes
+  geneci <- geneci(dndsout,
+                   gene_list = c("SERPINA1", "ACVR2A", "CIDEB", "GPAM", "FOXO1"),
+                   level = 0.95)
 
-  geneci <- geneci(dndsout, gene_list = c("SERPINA1", "ACVR2A", "CIDEB", "GPAM", "FOXO1"), level = 0.95)
-  write.table(geneci, paste0("outputs/SLD_per_gene_ci.tsv"), sep = "\t", col.names = T, row.names = F, quote = F)
+  # save confidence intervals
+  write.table(geneci, paste0("outputs/dnds/SLD_per_gene_ci.tsv"), 
+              sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
 

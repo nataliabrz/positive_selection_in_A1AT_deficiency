@@ -1,0 +1,313 @@
+---
+title: "mutation_count_per_microbiopsy"
+author: "Natalia Brzozowska"
+date: "2023-10-30"
+output: html_document
+---
+
+# Load libraries
+
+```{r, message=FALSE}
+library(dplyr)
+library(data.table)
+library(GenomicRanges)
+library(ggplot2)
+library(patchwork)
+library(dndscv)
+library(ggplot2)
+```
+
+# Load and prepare files
+
+```{r}
+wgs_calls <- read.table("data/calls/wgs_calls.csv", sep = ",", stringsAsFactors = F, header = T)
+
+donor_info <- read.table("data/metadata_files/A1AD_patient_info_2019-10-30.csv", sep = ",", stringsAsFactors = F, header = T) |>
+  dplyr::rename(internal_id=Donor,
+         age=Age)
+
+lcm_database <-  fread("data/metadata_files/lcm_cut_metadata.tsv", sep="\t", header=T, data.table=F) 
+
+exome_calls <- read.table("data/calls/exome_calls.csv", sep = ",", stringsAsFactors = F, header = T)
+
+bed <- read.table("data/reference_files/lcm_exome_callable_bait_set.bed",sep="\t",header=T)
+
+```
+
+# Combine the exome and genome calls
+
+A few samples had both WGS and WXS performed. To avoid discovery bias, only cound the snvs detected by WGS.
+```{r}
+
+duplicated_samples <- lcm_database$sampleID[duplicated(lcm_database$sampleID)]
+
+wgs_calls_filt <- wgs_calls %>%
+  dplyr::select(mut_id,Chrom,Pos,Ref,Alt,sampleID,Mut_Frags,mutID_sampleID,coverage,vaf,Project)
+
+exome_calls_filt <- exome_calls %>%
+  dplyr::select(mut_id,Chrom,Pos,Ref,Alt,sampleID,Mut_Frags,mutID_sampleID,coverage,vaf,Project) %>%
+  filter(!sampleID %in% duplicated_samples) # for samples that were both wgs and wex, remove the wgs calls to not be biased by doubled coverage
+
+all_calls <- rbind(wgs_calls_filt,exome_calls_filt) %>%
+  distinct(mutID_sampleID, .keep_all = TRUE) %>%
+  mutate(donor_id=substr(sampleID,1,7)) %>%
+  dplyr::rename(chrom=Chrom,
+         pos=Pos,
+         ref=Ref,
+         mut=Alt)
+
+```
+
+# Subset calls to callable exome range from bed file
+
+bed file was generated with the "define_callable_exome_region.Rmd" file
+```{r}
+
+# Create a GRanges object for 'all_calls'
+all_calls_gr <- GRanges(seqnames = all_calls$chrom,
+                        ranges = IRanges(start = all_calls$pos, end = all_calls$pos),
+                        mut_id = all_calls$mut_id,
+                        sampleID = all_calls$sampleID)
+
+# Create a GRanges object for 'bed'
+bed_gr <- GRanges(seqnames = bed$chrom,
+                  ranges = IRanges(start = bed$start, end = bed$end))
+
+# Find the intersection between 'all_calls' and 'bed'
+intersection <- subsetByOverlaps(all_calls_gr, bed_gr)
+
+# Extract the subset of 'all_calls' that intersects with 'bed'
+filtered_calls <- as.data.frame(intersection) %>%
+  dplyr::select(seqnames,start,mut_id,sampleID) %>%
+  dplyr::rename(chr=seqnames,
+         pos=start) %>%
+  mutate(mutID_sampleID = paste0(sampleID,"_",mut_id)) %>%
+  left_join(all_calls[,c("ref","mut","mutID_sampleID","Mut_Frags","coverage","vaf","donor_id","Project")],by="mutID_sampleID") %>%
+  dplyr::select(chr,pos,ref,mut,sampleID,donor_id,mut_id,Mut_Frags,coverage,vaf,Project)
+
+head(filtered_calls)
+
+```
+
+# plot total number of mutations per exome and coverage per sample
+
+```{r}
+exome_size <- sum(bed$length)
+
+samples <- unique(filtered_calls$sampleID)
+
+snv_filtered_calls <- filtered_calls[nchar(filtered_calls$ref)==1 & nchar(filtered_calls$mut)==1,]
+
+burden <- as.data.frame(array(data = NA, dim = c(length(samples),5)))
+colnames(burden) <-c("internal_id","paper_donor","donor_age","snv_count","snv_burden")
+
+burden$internal_id <- samples
+
+for(i in 1:nrow(burden)){
+  burden$paper_donor[i] <- donor_info$paper_id[which(substr(burden$internal_id[i],1,7) == donor_info$internal_id)]
+  burden$donor_age[i] <- as.numeric(paste0(donor_info$age[which(substr(burden$internal_id[i],1,7) == donor_info$internal_id)]))
+  burden$snv_count[i] <- length(which(snv_filtered_calls$sampleID == burden$internal_id[i]))
+  burden$snv_burden[i] <- (burden$snv_count[i] / exome_size) * 1000000
+  burden$mean_vaf[i] <- mean(snv_filtered_calls[snv_filtered_calls$sampleID == burden$internal_id[i],"vaf"])
+}
+
+burden_liver <- burden %>%
+  mutate(disease = case_when(
+    startsWith(paper_donor, "HH") ~ "HH",
+    startsWith(paper_donor, "AT") ~ "A1AD",
+    TRUE ~ NA_character_
+  ))
+
+
+## remove duplicate exome samples, only keep genomes
+lcm_database <- lcm_database[!(lcm_database$platform == "WXS" & lcm_database$sampleID %in% duplicated_samples), ]
+
+all_data_sorted <- burden_liver %>%
+  group_by(disease, paper_donor) %>%
+  mutate(mx = max(snv_count)) %>%
+  arrange(disease, donor_age,mx,snv_count) %>%
+  dplyr::select(-mx) %>%
+  left_join(lcm_database[,c("sampleID","coverage","platform")] %>% dplyr::rename(internal_id=sampleID),by="internal_id") %>%
+  mutate(vafdepth = mean_vaf*coverage)
+
+
+all_data_sorted$internal_id <- factor(all_data_sorted$internal_id, levels = unique(all_data_sorted$internal_id))
+all_data_sorted$paper_donor <- factor(all_data_sorted$paper_donor, levels = unique(all_data_sorted$paper_donor))
+
+# plot total mutation counts
+counts_plot <- ggplot(all_data_sorted, aes(x=internal_id, y=snv_count, fill=paper_donor, col=paper_donor)) +
+  geom_point() +
+  scale_fill_manual(values = rep("#5A9D9E",10)) +
+  scale_color_manual(values = rep("#5A9D9E",10)) +
+  theme_minimal() +
+  theme(axis.text.x = element_blank()) +
+  theme(axis.title.x = element_blank()) +
+  theme(strip.text.x = element_text(angle = 45)) +
+  theme(legend.position = "none") +
+  facet_grid(~paper_donor, switch = "x", scales = "free_x", space = "free_x")    +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, max(all_data_sorted$snv_count)+5)) +
+  labs( x="Sample",y = "Mutations per exome",  size = 0.9)  +
+  theme(panel.spacing=unit(4,"pt"),  panel.border=element_rect(colour="white", fill=NA))
+counts_plot
+
+
+coverage_plot <- ggplot(all_data_sorted, aes(x = internal_id, y = coverage, fill = factor(platform))) +
+  scale_fill_manual(values = c("#62C3A6","#839AC5")) +
+  geom_bar(stat = "identity", position = position_dodge(0.9), width = 0.6, alpha = 0.7) +
+#  scale_fill_manual(values = rep("#5A9D9E", 10)) +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.x = element_text(size=0),
+        legend.position = "none",
+        panel.grid = element_blank()) +
+  facet_grid(~paper_donor, switch = "x", scales = "free_x", space = "free_x") +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, max(all_data_sorted$coverage) + 20)) +
+  labs(x = NULL, y = "Coverage", size = 0.9) +
+  theme(panel.spacing = unit(4, "pt"), panel.border = element_rect(colour = "white", fill = NA))
+coverage_plot
+
+combined_plot <- coverage_plot / counts_plot + 
+  plot_layout(heights = c(1, 2))
+
+combined_plot
+
+
+```
+
+# annotate mutations with dnds
+
+```{r}
+covs = "data/reference_files/covariates_20pc_GRCh37-38.epi_strict_outliers.Rdat"
+load(covs)
+refcds_38 = "data/reference_files/refcds_GRCh38-GencodeV18+Appris.rda"
+load(refcds_38)
+
+muts <- filtered_calls %>%
+  dplyr::select(sampleID,chr,pos,ref,mut) %>%
+  mutate(chr=gsub("chr","",chr))
+
+dndsout <- dndscv(muts, max_muts_per_gene_per_sample = Inf, max_coding_muts_per_sample = Inf, outmats = T, refdb = refcds_38, cv = scores, mingenecovs = 0)
+
+annotmuts <- dndsout$annotmuts
+
+annotmuts <- annotmuts %>%
+  dplyr::select(sampleID,chr,pos,ref,mut,impact) %>%
+  dplyr::mutate(internal_id=substr(sampleID,1,7)) %>%
+  dplyr::left_join(donor_info[,c("internal_id","paper_id","Disease","age")]) %>%
+  mutate(impact = ifelse(impact == "no-SNV", "Indel", impact)) %>%
+  mutate(disease = case_when(
+    startsWith(paper_id, "HH") ~ "HH",
+    startsWith(paper_id, "AT") ~ "A1AD",
+    TRUE ~ NA_character_
+  )) %>% arrange(disease, age)
+
+
+  
+```
+
+# plot Fig. 1b - the number of coding mutations within callable exome region per sample
+
+```{r}
+
+# Convert "Impact" to a factor with a specified order for better visualization
+annotmuts$impact <- factor(annotmuts$impact, levels = c("Synonymous", "Missense", "Nonsense", "Indel", "Essential_Splice", "Stop_loss"))
+
+observ_counts <- annotmuts %>%
+  group_by(sampleID) %>%
+  summarize(total_observations = n()) %>%
+  dplyr::mutate(donor=substr(sampleID,1,7)) %>%
+  arrange(donor,total_observations)
+
+# Reorder the sampleID based on total number of observations
+annotmuts$sampleID <- factor(annotmuts$sampleID, levels=unique(observ_counts$sampleID))
+annotmuts$internal_id <- factor(annotmuts$internal_id, levels=unique(annotmuts$internal_id))
+
+# Create a stacked bar plot
+coding_plot <- ggplot(annotmuts, aes(x = sampleID, fill = impact)) +
+  geom_bar() +
+  facet_grid(~internal_id, scales = "free_x", space="free") +
+  scale_fill_manual(values = c(
+    "Synonymous" = "#B1B4B4",
+    "Missense" = "#4783B1",
+    "Nonsense" = "#CE4427",
+    "Indel" = "#79C262",
+    "Essential_Splice" = "#A360A7",
+    "Stop_loss" = "#FAA32C"
+  )) +
+  theme_minimal() +
+  labs(x = "Sample ID", y = "Number of Mutations", fill = "Impact") +
+  theme(legend.position = "right",
+        axis.text.x=element_blank(),
+        panel.grid.minor = element_blank()) +
+  theme(panel.spacing = unit(4, "pt"), panel.border = element_rect(colour = "white", fill = NA))
+
+
+# Combine the plots using patchwork
+combined_plot_2 <- coverage_plot / coding_plot + 
+  plot_layout(heights = c(1, 3))
+combined_plot_2
+ggsave(plot = combined_plot_2, filename = "outputs/figures/Fig1b_coding_mut_counts_per_exome_in_callable_bed_with_coverage.pdf", width = 15, height = 5, useDingbats = F)
+
+
+```
+
+
+# Plot Extended Fig. 2b - signature exposures from exomes
+
+```{r}
+library(tidyverse)
+
+exposures <- read.table("data/signatures/exposures_per_lcm_sample_all.txt")
+exposures=exposures[,c("SBS1","SBS5","SBS40","SBS12","SBS16","Stan_sig","N2")]
+exposures[,"SBS5"]=exposures[,"SBS5"]+exposures[,"SBS40"]
+colnames(exposures)[colnames(exposures)=="SBS5"]="SBS5/40"
+exposures=exposures[,colnames(exposures)!="SBS40"]
+
+colnames(exposures)[colnames(exposures)=="Stan_sig"] <- "SBSLiver"
+
+exposures_long <- exposures %>%
+  rownames_to_column(var = "sampleID") %>%
+  pivot_longer(cols = -sampleID, names_to = "signature", values_to = "proportion") %>%
+  dplyr::mutate(internal_id=substr(sampleID,1,7)) %>%
+  dplyr::left_join(donor_info[,c("internal_id","paper_id","Disease","age")]) %>%
+  mutate(disease = case_when(
+    startsWith(paper_id, "HH") ~ "HH",
+    startsWith(paper_id, "AT") ~ "A1AD",
+    TRUE ~ NA_character_
+  )) %>% arrange(disease, age)
+
+exposures_long$sampleID <- factor(exposures_long$sampleID, levels=levels(annotmuts$sampleID))
+exposures_long$paper_id <- factor(exposures_long$paper_id, levels=unique(exposures_long$paper_id))
+exposures_long$internal_id <- factor(exposures_long$internal_id, levels=unique(exposures_long$internal_id))
+
+exposures_plot <- ggplot(exposures_long, aes(x = sampleID, y = proportion, fill = signature)) +
+  geom_bar(stat = "identity", position = "fill") + # Use stat="identity" for pre-calculated proportions
+  facet_grid(~internal_id, scales = "free_x", space = "free") + # Ensure paper_id or similar grouping variable is available
+  scale_fill_manual(values = c(
+    "SBS1" = "#619947",
+    "SBS5/40" = "#686EA8",
+    "SBS12" = "#8BCECD",
+    "SBS16" = "#9695C9",
+    "SBSLiver" = "#292A53",
+    "N2" = "#E0E4ED"
+  )) +
+  theme_minimal() +
+  labs(x = "Sample ID", y = "Signature proportions", fill = "Signature") +
+  theme(
+    legend.position = "right",
+    axis.text.x = element_blank(),
+    strip.text.x = element_text(hjust = 0), # Angle facet titles
+    panel.grid.major = element_blank(), # Remove major grid lines
+    panel.grid.minor = element_blank(), # Remove minor grid lines
+    axis.title.x = element_blank() # Ensure x-axis title is removed
+  )
+
+exposures_plot
+
+ggsave(plot = exposures_plot, filename = "outputs/figures/Ext_Fig2b_signature_exposure_proportions_per_exome_lcm_sample.pdf", width = 12, height = 4, useDingbats = F)
+
+coding_plot / exposures_plot
+
+```
+

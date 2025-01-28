@@ -202,13 +202,15 @@ for (i in seq_along(cohorts)) {
                     kc = exc_ind_all,
                     onesided = TRUE)
 
-  #saveRDS(dndsout, file = paste0("outputs/dnds/", cohorts[i], "_dndsout.rds"))
+  # save the per-gene result
   write.table(dndsout$sel_cv,
               paste0("outputs/dnds/", cohorts[i], "_dndsout_selcv.tsv"),
               sep = "\t", col.names = T, row.names = F, quote = F)
+  
+  # save annotated mutations
   write.table(dndsout$annotmuts, paste0("outputs/dnds/", cohorts[i], "_dndsout_annotmuts.tsv"), sep = "\t", col.names = T, row.names = F, quote = F)
 
-  ## test for recurrent hotspots
+  # test for recurrent hotspots
   sitednds_liver <- sitednds(dndsout, method = "LNP")
   head(sitednds_liver$recursites)
 
@@ -218,7 +220,6 @@ for (i in seq_along(cohorts)) {
 # get confidence intervals for selected genes
 
 for (i in 1:seq_along(cohorts)) {
-  #dndsout <- readRDS(paste0("outputs/dnds/", cohorts[i], "_dndsout.rds"))
   geneci <- geneci(dndsout, gene_list = c("SERPINA1", "ACVR2A", "CIDEB", "GPAM", "FOXO1"), level = 0.95)
   write.table(geneci, paste0("outputs/dnds/", cohorts[i], "_per_gene_ci.tsv"), sep = "\t", col.names = T, row.names = F, quote = F)
 }

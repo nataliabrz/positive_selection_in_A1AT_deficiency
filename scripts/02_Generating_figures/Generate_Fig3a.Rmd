@@ -417,7 +417,7 @@ if(nrow(gene)>0){
 
 # save the SERPINA1 mutations for easy access when needed
 if ( goi[g] == "SERPINA1") {
-write.table(gene,"outputs/dnds/SERPINA1_annotmuts.tsv",sep="\t",col.names=T,row.names=F,quote=F)
+write.table(gene,"outputs/dnds/",cohort,"_",goi[g],"_annotmuts.tsv",sep="\t",col.names=T,row.names=F,quote=F)
 }
 
    # Set label position with lolliplot functions

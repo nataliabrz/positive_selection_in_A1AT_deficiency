@@ -106,6 +106,8 @@ ylim <- manhattan %>%
 
 ```
 
+generate the manhattan plot 
+
 ```{r plot_result_A1AD}
 
 # Create a dataframe with genes to label
