@@ -26,6 +26,7 @@ Due to the sensitive nature of the raw sequencing data, whole genome and exome s
 
 Filtered somatic mutation calls used in downstream analyses have been deposited in Mendeley Data and can be freely accessed here: https://data.mendeley.com/datasets/vhybvj2g9p/1. These files are provided as the starting point for all analyses in this repository.
 
+---
 
 ## Data Processing
 
@@ -80,6 +81,7 @@ For more details on the specific tools and parameters, please contact us or refe
 
 You can adapt this stage to your local setup and the mutation-calling algorithm you're most familiar with (e.g., Mutect2, Strelka, VarScan). As long as these tools are run in 'unmatched' mode, their outputs will be compatible with the rest of the analysis pipeline.
 
+---
 
 ## Objects that need to be downloaded from Mendeley Data
 
@@ -89,6 +91,7 @@ data/calls/exome_calls.csv
 
 data/calls/wgs_calls.csv
 
+---
 
 ## Example Workflow
 
