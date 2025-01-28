@@ -1,5 +1,7 @@
 outputs_backup/
-data/calls/
+data/calls/exome_calls.csv
+data/calls/wgs_calls.csv
+data/calls/x.snv.indel.matt.foad.RData
 misc/
 reports/
 scripts/Miscellaneous_scripts/get_sequence_context_for_all_calls.R
