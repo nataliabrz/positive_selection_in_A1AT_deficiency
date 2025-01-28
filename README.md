@@ -144,9 +144,7 @@ If you’ve already cloned the repository, initialise and update the submodule:
 git submodule update --init --recursive
 ```
 
-**Running submodules**
-
-##### Using the liver_ndp_tree_building submodule (Figure 2a)
+**Using the liver_ndp_tree_building submodule (Figure 2a)**
 
 Navigate to the submodule:
 ```bash
@@ -155,7 +153,7 @@ cd scripts/liver_ndp_tree_building
 
 Follow the instructions in the liver_ndp_tree_building/README.md to run the pipeline.
 
-##### Using the mapscape_generator submodule (Figure 2b)
+**Using the mapscape_generator submodule (Figure 2b)**
 
 Navigate to the submodule:
 ```bash
