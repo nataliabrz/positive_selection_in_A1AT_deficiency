@@ -163,11 +163,11 @@ final_muts <- mutations_collapsed %>%
 write.table(x = final_muts, file = "outputs/dnds/combined_collapsed_dnds_input.tsv",
             sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 
-# loading dndscv covariates
+# loading dndscv covariats
 covs <- file.path("data", "reference_files",
                   "covariates_20pc_GRCh37-38.epi_strict_outliers.Rdat")
 
-load(covs) # it loads an object called scores
+load(covs) # it loads and object called scores
 refcds_38 <- "data/reference_files/refcds_GRCh38-GencodeV18+Appris.rda"
 
 
