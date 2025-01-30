@@ -18,7 +18,7 @@ This code allows reproduction of all analyses from filtered and processed substi
 
 ## Data Availability 
 
-Due to the sensitive nature of the raw sequencing data, whole genome and exome sequencing data have been deposited in the European Genome–phenome Archive (EGA):
+Due to the sensitive nature of the raw sequencing data, whole genome and exome sequencing bam files have been deposited in the European Genome–phenome Archive (EGA):
 
 - WGS data: EGAD00001015430 (https://ega-archive.org/studies/EGAD00001015430)
 - Exome data: EGAD00001015431 (https://ega-archive.org/studies/EGAD00001015431)
@@ -28,9 +28,9 @@ Filtered somatic mutation calls used in downstream analyses have been deposited 
 
 ---
 
-## Data Processing
+## Data Pre-processing
 
-The bam files were processed to identify somatic mutations using the following pipeline:
+The bam files were pre-processed to identify somatic mutations using the following pipeline:
 
 1. **Variant Calling**  
    - **SNVs**: Detected with CaVEMan ([Jones *et al.*, 2016](https://doi.org/10.1002/cpbi.20)) using the following parameters:  
@@ -79,7 +79,7 @@ Both CaVEMan and cgpPindel were originally designed to detect clonal mutations i
 
 For more details on the specific tools and parameters, please contact us or refer to the relevant publications.
 
-You can adapt this stage to your local setup and the mutation-calling algorithm you're most familiar with (e.g., Mutect2, Strelka, VarScan). As long as these tools are run in 'unmatched' mode, their outputs will be compatible with the rest of the analysis pipeline.
+It might be easier to adapt this stage to your local setup and the mutation-calling algorithm you're most familiar with (e.g., Mutect2, Strelka, VarScan). As long as these tools are run in 'unmatched' mode, their outputs will be compatible with the rest of the analysis pipeline.
 
 ---
 
