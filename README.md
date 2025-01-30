@@ -87,9 +87,9 @@ You can adapt this stage to your local setup and the mutation-calling algorithm 
 
 These objects should be downloaded from https://data.mendeley.com/datasets/vhybvj2g9p/1 and placed in the cloned repository with the following file structure:
 
-data/calls/exome_calls.csv
+`data/calls/exome_calls.csv`
 
-data/calls/wgs_calls.csv
+`data/calls/wgs_calls.csv`
 
 ---
 
