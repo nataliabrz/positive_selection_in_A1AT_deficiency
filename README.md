@@ -85,7 +85,7 @@ You can adapt this stage to your local setup and the mutation-calling algorithm 
 
 ## Objects that need to be downloaded from Mendeley Data
 
-These objects should be downloaded and placed in the cloned repository with the following file structure:
+These objects should be downloaded from https://data.mendeley.com/datasets/vhybvj2g9p/1 and placed in the cloned repository with the following file structure:
 
 data/calls/exome_calls.csv
 
@@ -169,7 +169,7 @@ Follow the instructions in the mapscape_generator/README.md to run the pipeline.
 
 ## Miscellaneous_scripts
 
-The 'Run_dNdS_on_Ng2021_calls.R' script reproduces dN/dS analysis on previously published 'Convergent somatic mutations in metabolism genes in chronic liver disease' article. The data supporting the paper can be downloaded from Mendeley at https://data.mendeley.com/datasets/283gy325fk/1. To run the script, place the downloaded object in the cloned repository with the following file structure:
+The `Miscellaneous_scripts/Run_dNdS_on_Ng2021_calls.R` script reproduces dN/dS analysis on previously published 'Convergent somatic mutations in metabolism genes in chronic liver disease' article. The data supporting the paper can be downloaded from Mendeley at https://data.mendeley.com/datasets/283gy325fk/1. To run the script, place the downloaded object in the cloned repository with the following file structure:
 
 data/calls/x.snv.indel.matt.foad.RData
 
