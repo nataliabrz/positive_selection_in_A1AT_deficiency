@@ -171,7 +171,7 @@ Follow the instructions in the mapscape_generator/README.md to run the pipeline.
 
 The `Miscellaneous_scripts/Run_dNdS_on_Ng2021_calls.R` script reproduces dN/dS analysis on previously published 'Convergent somatic mutations in metabolism genes in chronic liver disease' article. The data supporting the paper can be downloaded from Mendeley at https://data.mendeley.com/datasets/283gy325fk/1. To run the script, place the downloaded object in the cloned repository with the following file structure:
 
-data/calls/x.snv.indel.matt.foad.RData
+`data/calls/x.snv.indel.matt.foad.RData`
 
 ---
 
