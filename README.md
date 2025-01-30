@@ -79,7 +79,7 @@ Both CaVEMan and cgpPindel were originally designed to detect clonal mutations i
 
 For more details on the specific tools and parameters, please contact us or refer to the relevant publications.
 
-It might be easier to adapt this stage to your local setup and the mutation-calling algorithm you're most familiar with (e.g., Mutect2, Strelka, VarScan). As long as these tools are run in 'unmatched' mode, their outputs will be compatible with the rest of the analysis pipeline.
+You can adapt this stage to your local setup and the mutation-calling algorithm you're most familiar with (e.g., Mutect2, Strelka, VarScan). As long as these tools are run in 'unmatched' mode, their outputs will be compatible with the rest of the analysis pipeline.
 
 ---
 
